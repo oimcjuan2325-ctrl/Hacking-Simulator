@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Shell - Terminal v4.2</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            font-size: 18px;
+            overflow: hidden;
+        }
+        .cursor {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div><span class="cursor">█</span>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const lines = [
+            "==================================================",
+            "   SYSTEM OVERRIDE v4.2.0 - SECURE ACCESS ACTIVE",
+            "==================================================",
+            "",
+            "[+] Conectando al nodo central de la red escolar...",
+            "[+] Bypasseando el firewall del profesor...",
+            "[+] Inyectando payload en la memoria caché...",
+            "[+] Descifrando hashes de la base de datos de notas...",
+            "[+] Extrayendo privilegios de superusuario (root)...",
+            "[!] ACCESO CONCEDIDO. BIENVENIDO, ADMIN.",
+            "--------------------------------------------------",
+            "Iniciando volcado de datos del servidor central..."
+        ];
+
+        let lineIndex = 0;
+
+        function showLines() {
+            if (lineIndex < lines.length) {
+                terminal.innerHTML += lines[lineIndex] + "<br>";
+                lineIndex++;
+                setTimeout(showLines, 400);
+            } else {
+                startMatrixRain();
+            }
+        }
+
+        function startMatrixRain() {
+            setInterval(() => {
+                let chars = "01010101010101ABCDEF#@$%&*";
+                let row = "";
+                for(let i = 0; i < 80; i++) {
+                    row += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                terminal.innerHTML += row + "<br>";
+                window.scrollTo(0, document.body.scrollHeight);
+            }, 50);
+        }
+
+        setTimeout(showLines, 1000);
+    </script>
+</body>
+</html>
