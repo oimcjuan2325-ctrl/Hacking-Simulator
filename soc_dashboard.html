@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Apex Security - SOC Operations Center</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #050b14;
+            color: #00e5ff;
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- PANTALLA DE LOGIN --- */
+        #login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle, #0a192f 0%, #02060d 100%);
+        }
+        .login-box {
+            background: #0a1f3d;
+            border: 1px solid #00e5ff55;
+            padding: 30px;
+            border-radius: 8px;
+            width: 320px;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #00ffff;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #8892b0;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            background: #02060d;
+            border: 1px solid #00e5ff55;
+            color: #00e5ff;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: #00e5ff;
+            color: #02060d;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .login-btn:hover {
+            background: #64ffda;
+        }
+        .error-msg {
+            color: #ff3366;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* --- DASHBOARD PRINCIPAL --- */
+        #dashboard-screen {
+            display: none;
+            height: 100vh;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 10px;
+            padding: 10px;
+        }
+        header {
+            grid-column: span 2;
+            background: #0a192f;
+            border: 1px solid #00e5ff55;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+        }
+        header h1 {
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        .status-badge {
+            background: #00e5ff22;
+            color: #00ffcc;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            border: 1px solid #00ffcc;
+        }
+
+        .panel {
+            background: #0a192f;
+            border: 1px solid #00e5ff55;
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .panel h3 {
+            font-size: 12px;
+            border-bottom: 1px dashed #00e5ff33;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            color: #64ffda;
+            text-transform: uppercase;
+        }
+
+        /* Panel Izquierdo: Mapa de Amenazas */
+        #threatMapContainer {
+            position: relative;
+            flex-grow: 1;
+            background: #02060d;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        #threatCanvas {
+            width: 100%;
+            height: 100%;
+        }
+        .map-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 11px;
+            background: rgba(5, 11, 20, 0.8);
+            padding: 4px 8px;
+            border: 1px solid #00e5ff33;
+            color: #8892b0;
+        }
+
+        /* Panel Derecho: Consola de Diagnóstico / Auditoría */
+        .telemetry-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .console-box {
+            background: #02060d;
+            border: 1px solid #00e5ff33;
+            padding: 10px;
+            flex-grow: 1;
+            font-size: 11px;
+            overflow-y: auto;
+            color: #00ffcc;
+            line-height: 1.4;
+        }
+        .metric-box {
+            background: #02060d;
+            border: 1px solid #00e5ff33;
+            padding: 10px;
+            font-size: 12px;
+        }
+        .metric-bar {
+            background: #112240;
+            height: 6px;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .metric-fill {
+            background: #64ffda;
+            height: 100%;
+            width: 45%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>APEX SOC // AUTH</h2>
+            <div class="input-group">
+                <label>USER ID</label>
+                <input type="text" id="userInput" placeholder="Introducir usuario...">
+            </div>
+            <div class="input-group">
+                <label>SECURITY KEY</label>
+                <input type="password" id="passInput" placeholder="Introducir clave...">
+            </div>
+            <button class="login-btn" onclick="tryLogin()">ACCEDER AL SISTEMA</button>
+            <div id="errorMsg" class="error-msg">Credenciales inválidas. Acceso denegado.</div>
+        </div>
+    </div>
+
+    <div id="dashboard-screen">
+        <header>
+            <h1>APEX SECURITY // DEFENSE GRID V9.4</h1>
+            <div class="status-badge">ESTADO: ESCUDO ACTIVO (PROTEGIENDO RED)</div>
+        </header>
+
+        <div class="panel">
+            <h3>Mapa de Tráfico y Ataques Entrantes (Haz clic en un nodo)</h3>
+            <div id="threatMapContainer">
+                <canvas id="threatCanvas"></canvas>
+                <div class="map-hint">[!] Haz clic en cualquier punto rojo del mapa para analizar el vector de ataque y desplegar logs defensivos.</div>
+            </div>
+        </div>
+
+        <div class="panel telemetry-panel">
+            <h3>Consola de Auditoría y Diagnóstico</h3>
+            <div class="metric-box">
+                <div>Carga del Firewall Central: <span id="cpuVal">45%</span></div>
+                <div class="metric-bar"><div class="metric-fill" id="cpuBar"></div></div>
+            </div>
+            <div class="console-box" id="auditConsole">
+                [09:50:18] Sistema inicializado correctamente.<br>
+                [09:50:18] Escuchando interfaces de red locales...<br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica de Validación de Login
+        function tryLogin() {
+            const user = document.getElementById('userInput').value;
+            const pass = document.getElementById('passInput').value;
+
+            if (user === "Juan" && pass === "Orella") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'grid';
+                initDashboard();
+            } else {
+                const error = document.getElementById('errorMsg');
+                error.style.display = 'block';
+                setTimeout(() => error.style.display = 'none', 3000);
+            }
+        }
+
+        // Dashboard e Interactividad del Mapa
+        function initDashboard() {
+            const canvas = document.getElementById('threatCanvas');
+            const ctx = canvas.getContext('2d');
+            const consoleBox = document.getElementById('auditConsole');
+
+            function resizeCanvas() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Generar nodos de amenazas simulados
+            let threats = [];
+            for(let i=0; i<12; i++) {
+                threats.push({
+                    x: Math.random() * (canvas.width - 40) + 20,
+                    y: Math.random() * (canvas.height - 40) + 20,
+                    radius: 6,
+                    ip: `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+                    type: ['Fuerza Bruta SSH', 'Inyección de Paquetes', 'Escaneo de Puertos WLAN', 'Spoofing de Credenciales'][Math.floor(Math.random()*4)],
+                    active: true
+                });
+            }
+
+            // Dibujar Mapa
+            function drawMap() {
+                ctx.fillStyle = "#02060d";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Líneas de rejilla decorativas del mapa
+                ctx.strokeStyle = "#00e5ff11";
+                ctx.lineWidth = 1;
+                for(let x=0; x<canvas.width; x+=40) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                }
+                for(let y=0; y<canvas.height; y+=40) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+
+                // Dibujar puntos de ataque
+                threats.forEach(t => {
+                    ctx.fillStyle = "#ff3366";
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, t.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Anillo de eco
+                    ctx.strokeStyle = "#ff336655";
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, t.radius + 4, 0, Math.PI * 2);
+                    ctx.stroke();
+                });
+
+                requestAnimationFrame(drawMap);
+            }
+            drawMap();
+
+            // Interacción al hacer clic en un punto del mapa
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                threats.forEach(t => {
+                    let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
+                    if (dist < 15) {
+                        // Generar ráfaga de código de análisis detallado al hacer clic
+                        consoleBox.innerHTML += `<br><span style="color:#ff3366;">[!] ALERTA: Nodo ${t.ip} seleccionado. Analizando vector...</span><br>`;
+                        
+                        let hexStream = "010F4A9B C0A80112 FF33EE88 DEADBEEF 4E4F4445 ";
+                        for(let i=0; i<4; i++) {
+                            setTimeout(() => {
+                                consoleBox.innerHTML += `> [DIAGNÓSTICO] ${t.type} -> Hash: ${hexStream}<br>`;
+                                consoleBox.scrollTop = consoleBox.scrollHeight;
+                            }, i * 200);
+                        }
+                    }
+                });
+            });
+
+            // Simulación de métricas dinámicas
+            setInterval(() => {
+                let load = Math.floor(Math.random() * 30) + 30;
+                document.getElementById('cpuVal').innerText = load + "%";
+                document.getElementById('cpuBar').style.width = load + "%";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
