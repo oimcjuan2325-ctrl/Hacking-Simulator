@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Apex Security - SOC Operations Center</title>
+    <title>Nexus Core // Advanced Security Framework</title>
     <style>
         * {
             box-sizing: border-box;
@@ -10,8 +10,8 @@
             padding: 0;
         }
         body {
-            background-color: #050b14;
-            color: #00e5ff;
+            background-color: #03070c;
+            color: #00ff66;
             font-family: 'Courier New', Courier, monospace;
             height: 100vh;
             overflow: hidden;
@@ -23,46 +23,47 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: radial-gradient(circle, #0a192f 0%, #02060d 100%);
+            background: radial-gradient(circle, #0a1424 0%, #020408 100%);
         }
         .login-box {
-            background: #0a1f3d;
-            border: 1px solid #00e5ff55;
+            background: #080f1a;
+            border: 1px solid #00ff6655;
             padding: 30px;
-            border-radius: 8px;
-            width: 320px;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            border-radius: 6px;
+            width: 340px;
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.15);
         }
         .login-box h2 {
             margin-bottom: 20px;
-            font-size: 16px;
-            color: #00ffff;
+            font-size: 15px;
+            color: #00ff66;
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
         .input-group {
             margin-bottom: 15px;
         }
         .input-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             margin-bottom: 5px;
-            color: #8892b0;
+            color: #55aa77;
         }
         .input-group input {
             width: 100%;
             padding: 8px;
-            background: #02060d;
-            border: 1px solid #00e5ff55;
-            color: #00e5ff;
+            background: #020408;
+            border: 1px solid #00ff6655;
+            color: #00ff66;
             font-family: inherit;
             border-radius: 4px;
+            outline: none;
         }
         .login-btn {
             width: 100%;
             padding: 10px;
-            background: #00e5ff;
-            color: #02060d;
+            background: #00ff66;
+            color: #020408;
             border: none;
             font-weight: bold;
             cursor: pointer;
@@ -70,11 +71,11 @@
             transition: 0.2s;
         }
         .login-btn:hover {
-            background: #64ffda;
+            background: #33ff88;
         }
         .error-msg {
             color: #ff3366;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
             margin-top: 10px;
             display: none;
@@ -84,106 +85,94 @@
         #dashboard-screen {
             display: none;
             height: 100vh;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr 1fr;
             grid-template-rows: auto 1fr auto;
-            gap: 10px;
-            padding: 10px;
+            gap: 8px;
+            padding: 8px;
         }
         header {
             grid-column: span 2;
-            background: #0a192f;
-            border: 1px solid #00e5ff55;
-            padding: 10px 20px;
+            background: #080f1a;
+            border: 1px solid #00ff6655;
+            padding: 8px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-radius: 4px;
         }
         header h1 {
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 1px;
         }
         .status-badge {
-            background: #00e5ff22;
-            color: #00ffcc;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            border: 1px solid #00ffcc;
+            background: #00ff6622;
+            color: #00ff66;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            border: 1px solid #00ff66;
         }
 
         .panel {
-            background: #0a192f;
-            border: 1px solid #00e5ff55;
-            padding: 15px;
+            background: #060b14;
+            border: 1px solid #00ff6644;
+            padding: 12px;
             border-radius: 4px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
         .panel h3 {
-            font-size: 12px;
-            border-bottom: 1px dashed #00e5ff33;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-            color: #64ffda;
+            font-size: 11px;
+            border-bottom: 1px dashed #00ff6644;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+            color: #33ff88;
             text-transform: uppercase;
         }
 
-        /* Panel Izquierdo: Mapamundi */
-        #mapContainer {
-            position: relative;
-            flex-grow: 1;
-            background: #02060d;
-            border-radius: 4px;
-            overflow: hidden;
-            cursor: crosshair;
-        }
-        #worldCanvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Panel Derecho: Consola y Terminal Hacker */
         .console-box {
-            background: #02060d;
+            background: #020408;
             border: 1px solid #00ff6633;
-            padding: 10px;
+            padding: 8px;
             flex-grow: 1;
             font-size: 11px;
             overflow-y: auto;
             color: #00ff66;
-            line-height: 1.4;
+            line-height: 1.35;
         }
 
-        /* Barra Buscador Inferior */
-        .search-footer {
+        /* Controles inferiores */
+        .control-footer {
             grid-column: span 2;
-            background: #0a192f;
-            border: 1px solid #00e5ff55;
-            padding: 10px 15px;
+            background: #080f1a;
+            border: 1px solid #00ff6655;
+            padding: 8px 12px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             border-radius: 4px;
         }
-        .search-footer input {
+        .control-footer input {
             flex-grow: 1;
-            padding: 8px;
-            background: #02060d;
-            border: 1px solid #00e5ff55;
-            color: #00e5ff;
+            padding: 6px;
+            background: #020408;
+            border: 1px solid #00ff6655;
+            color: #00ff66;
             font-family: inherit;
             border-radius: 4px;
+            outline: none;
+            font-size: 11px;
         }
-        .search-footer button {
-            padding: 8px 15px;
+        .control-footer button {
+            padding: 6px 12px;
             background: #00ff66;
-            color: #02060d;
+            color: #020408;
             border: none;
             font-weight: bold;
             cursor: pointer;
             border-radius: 4px;
+            font-size: 11px;
         }
     </style>
 </head>
@@ -192,49 +181,51 @@
     <!-- PANTALLA DE ACCESO -->
     <div id="login-screen">
         <div class="login-box">
-            <h2>APEX SOC // AUTH</h2>
+            <h2>NEXUS CORE // LOGIN</h2>
             <div class="input-group">
-                <label>USER ID</label>
-                <input type="text" id="userInput" placeholder="Introducir usuario...">
+                <label>OPERATOR ID</label>
+                <input type="text" id="userInput" placeholder="Usuario (Juan)...">
             </div>
             <div class="input-group">
-                <label>SECURITY KEY</label>
-                <input type="password" id="passInput" placeholder="Introducir clave...">
+                <label>ACCESS KEY</label>
+                <input type="password" id="passInput" placeholder="Contraseña (Orella)...">
             </div>
-            <button class="login-btn" onclick="tryLogin()">ACCEDER AL SISTEMA</button>
-            <div id="errorMsg" class="error-msg">Credenciales inválidas. Acceso denegado.</div>
+            <button class="login-btn" onclick="tryLogin()">AUTENTICAR</button>
+            <div id="errorMsg" class="error-msg">Credenciales incorrectas. Acceso denegado.</div>
         </div>
     </div>
 
     <!-- PANTALLA DE CONTROL PRINCIPAL -->
     <div id="dashboard-screen">
         <header>
-            <h1>APEX SECURITY // GLOBAL GEO-RADAR</h1>
-            <div class="status-badge">SISTEMA OPERATIVO</div>
+            <h1>NEXUS SEC-FRAMEWORK v7.2 // ACTIVE TERMINAL</h1>
+            <div class="status-badge">KERNEL: SECURE [ONLINE]</div>
         </header>
 
-        <!-- Panel Izquierdo: Mapa Mundi Interactivo -->
+        <!-- Panel Izquierdo: Terminal de Procesos -->
         <div class="panel">
-            <h3>Mapamundi Global (Haz clic en una zona urbana o país)</h3>
-            <div id="mapContainer">
-                <canvas id="worldCanvas"></canvas>
+            <h3>Consola de Sistema y Enlaces</h3>
+            <div class="console-box" id="systemConsole">
+                [INIT] Cargando módulos de red...<br>
+                [INIT] Enlazando interfaces virtuales wlan0 / eth0...<br>
+                [READY] Sistema preparado para análisis de nodos de prueba.<br>
             </div>
         </div>
 
-        <!-- Panel Derecho: Terminal Estilo Hacker Verde -->
+        <!-- Panel Derecho: Volcado Criptográfico Hexadecimal -->
         <div class="panel">
-            <h3>Terminal de Análisis Criptográfico</h3>
-            <div class="console-box" id="hackerConsole">
-                [SYSTEM] Conexión establecida con el nodo central.<br>
-                [INFO] Seleccione un punto en el mapa o busque una red WiFi abajo.<br>
+            <h3>Buffer de Tráfico y Datos Binarios</h3>
+            <div class="console-box" id="hexConsole" style="color: #00cc52;">
+                0x004A [OK] - Buffer limpio.<br>
+                0x008B [OK] - A la espera de instrucciones de objetivo...<br>
             </div>
         </div>
 
-        <!-- Buscador de Redes WiFi Inferior -->
-        <div class="search-footer">
-            <label style="font-size: 12px; color: #8892b0;">Rastrear red WiFi:</label>
-            <input type="text" id="wifiSearchInput" placeholder="Ej: Movistar_Plus, DigiFibra, MiWiFi...">
-            <button onclick="searchAndHackWifi()">Hackear Red</button>
+        <!-- Barra de Control Inferior -->
+        <div class="control-footer">
+            <label style="font-size: 11px; color: #55aa77;">Objetivo / Comando:</label>
+            <input type="text" id="targetInput" placeholder="Introduce red, IP o comando de simulación (ej: target_wifi_01)">
+            <button onclick="executeSimulation()">Ejecutar Protocolo</button>
         </div>
     </div>
 
@@ -246,7 +237,6 @@
             if (user === "Juan" && pass === "Orella") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard-screen').style.display = 'grid';
-                initDashboard();
             } else {
                 const error = document.getElementById('errorMsg');
                 error.style.display = 'block';
@@ -254,143 +244,51 @@
             }
         }
 
-        function initDashboard() {
-            const canvas = document.getElementById('worldCanvas');
-            const ctx = canvas.getContext('2d');
-            const consoleBox = document.getElementById('hackerConsole');
+        function executeSimulation() {
+            const target = document.getElementById('targetInput').value.trim();
+            const sysConsole = document.getElementById('systemConsole');
+            const hexConsole = document.getElementById('hexConsole');
 
-            function resizeCanvas() {
-                canvas.width = canvas.parentElement.clientWidth;
-                canvas.height = canvas.parentElement.clientHeight;
-            }
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            // Dibujar un mapa mundi abstracto basado en puntos de continentes y ciudades
-            function drawWorldMap() {
-                ctx.fillStyle = "#02060d";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Rejilla de coordenadas de fondo
-                ctx.strokeStyle = "#00e5ff15";
-                ctx.lineWidth = 1;
-                for(let x=0; x<canvas.width; x+=50) {
-                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-                }
-                for(let y=0; y<canvas.height; y+=50) {
-                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-                }
-
-                // Dibujar puntos simulando continentes / ciudades principales
-                ctx.fillStyle = "#00e5ff66";
-                const cities = [
-                    {x: canvas.width * 0.2, y: canvas.height * 0.3, name: "Norteamérica (Ciudad / Zona Residencial)"},
-                    {x: canvas.width * 0.25, y: canvas.height * 0.6, name: "Sudamérica (Zona Urbana)"},
-                    {x: canvas.width * 0.48, y: canvas.height * 0.3, name: "Europa (Zona Residencial / Edificios)"},
-                    {x: canvas.width * 0.55, y: canvas.height * 0.4, name: "África (Zona de Servidores)"},
-                    {x: canvas.width * 0.75, y: canvas.height * 0.35, name: "Asia (Metrópolis / Torres de Red)"},
-                    {x: canvas.width * 0.88, y: canvas.height * 0.7, name: "Oceanía (Zona Urbana)"},
-                    {x: canvas.width * 0.52, y: canvas.height * 0.7, name: "Océano abierto (Sin casas / Vacío)"},
-                    {x: canvas.width * 0.1, y: canvas.height * 0.8, name: "Océano Pacífico (Vacío)"}
-                ];
-
-                cities.forEach(c => {
-                    ctx.beginPath();
-                    ctx.arc(c.x, c.y, 4, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-                
-                window.mapCities = cities;
-            }
-            drawWorldMap();
-
-            // Clic en el mapa
-            canvas.addEventListener('click', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-
-                let lat = (90 - (mouseY / canvas.height) * 180).toFixed(2);
-                let lon = ((mouseX / canvas.width) * 360 - 180).toFixed(2);
-
-                let foundLocation = "Zona deshabitada o mar abierto";
-                let hasHouse = false;
-
-                window.mapCities.forEach(c => {
-                    let dist = Math.hypot(mouseX - c.x, mouseY - c.y);
-                    if (dist < 35) {
-                        foundLocation = c.name;
-                        if (!c.name.includes("Vacío") && !c.name.includes("Océano")) {
-                            hasHouse = true;
-                        }
-                    }
-                });
-
-                consoleBox.innerHTML += `<br>[GEO] Coordenadas: [Lat: ${lat}, Lon: ${lon}]<br>`;
-                consoleBox.innerHTML += `[UBICACIÓN] Detectado en: ${foundLocation}<br>`;
-
-                if (hasHouse) {
-                    let confirmHack = confirm(`En estas coordenadas (${lat}, ${lon}) hay una casa/zona urbana. ¿Desearía hackear esa wifi?`);
-                    if (confirmHack) {
-                        triggerHackingSimulation("Red_Residencial_" + Math.floor(Math.random()*1000));
-                    }
-                } else {
-                    consoleBox.innerHTML += `<span style="color:#ff3366;">[INFO] No hay ninguna casa ni red wifi cerca en este punto. Imposible hackear.</span><br>`;
-                }
-                consoleBox.scrollTop = consoleBox.scrollHeight;
-            });
-        }
-
-        function searchAndHackWifi() {
-            const wifiName = document.getElementById('wifiSearchInput').value.trim();
-            const consoleBox = document.getElementById('hackerConsole');
-
-            if (!wifiName || wifiName.toLowerCase().includes("fulanito") || wifiName.toLowerCase().includes("hola")) {
-                consoleBox.innerHTML += `<br><span style="color:#ff3366;">[ERROR] Nombre de red no válido o sospechoso ("${wifiName}"). Operación cancelada.</span><br>`;
-                consoleBox.scrollTop = consoleBox.scrollHeight;
+            if (!target) {
+                sysConsole.innerHTML += `<br><span style="color:#ff3366;">[ERROR] Especifica un objetivo válido en el campo inferior.</span><br>`;
                 return;
             }
 
-            triggerHackingSimulation(wifiName);
-        }
-
-        function triggerHackingSimulation(ssid) {
-            const consoleBox = document.getElementById('hackerConsole');
-            consoleBox.innerHTML += `<br><span style="color:#00ff66; font-weight:bold;">[>>>] Iniciando protocolo en red: ${ssid}</span><br>`;
+            sysConsole.innerHTML += `<br><span style="color:#33ff88;">[>] Iniciando análisis sobre objetivo: ${target}</span><br>`;
             
             setTimeout(() => {
-                consoleBox.innerHTML += `> Analizando red wifi...<br>`;
-                consoleBox.scrollTop = consoleBox.scrollHeight;
-            }, 600);
+                sysConsole.innerHTML += `> Estableciendo enlace mediante protocolo de capa 2...<br>`;
+                sysConsole.scrollTop = sysConsole.scrollHeight;
+            }, 500);
 
             setTimeout(() => {
-                consoleBox.innerHTML += `> Descifrando contraseña en la red wifi a base de un sistema con inteligencia artificial...<br>`;
-                consoleBox.scrollTop = consoleBox.scrollHeight;
-            }, 1400);
+                sysConsole.innerHTML += `> Extrayendo metadatos de seguridad y hashes del búfer...<br>`;
+                sysConsole.scrollTop = sysConsole.scrollHeight;
+            }, 1200);
 
             setTimeout(() => {
-                consoleBox.innerHTML += `<span style="color: #ffff00;">> Contraseña recibida con éxito. Hackeando wifi para que sea inservible...</span><br>`;
-                consoleBox.scrollTop = consoleBox.scrollHeight;
-            }, 2400);
+                sysConsole.innerHTML += `<span style="color:#ffff00;">> Procesando simulación de IA criptográfica sobre el flujo de datos...</span><br>`;
+                sysConsole.scrollTop = sysConsole.scrollHeight;
+            }, 2000);
 
-            // Lluvia de código estilo hacker verde
             setTimeout(() => {
-                let interval = setInterval(() => {
-                    let hexChars = "010101010101ABCDEF#@$%&/\\<>{}[]0x99FF KEY_FOUND_ROOT_OVERRIDE ";
-                    let line = "";
-                    for(let i=0; i<60; i++) {
-                        line += hexChars.charAt(Math.floor(Math.random() * hexChars.length));
+                let count = 0;
+                let hexInterval = setInterval(() => {
+                    let chars = "0123456789ABCDEFDEADBEEFCAFE";
+                    let row = "0x" + Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase() + " [DATA]: ";
+                    for(let i=0; i<32; i++) {
+                        row += chars.charAt(Math.floor(Math.random() * chars.length));
                     }
-                    consoleBox.innerHTML += `<span style="color: #00ff66; opacity: 0.8;">${line}</span><br>`;
-                    consoleBox.scrollTop = consoleBox.scrollHeight;
-                }, 50);
-
-                setTimeout(() => {
-                    clearInterval(interval);
-                    consoleBox.innerHTML += `<span style="color: #00ffff; font-weight:bold;">[SUCCESS] Red ${ssid} comprometida e inutilizada correctamente.</span><br>`;
-                    consoleBox.scrollTop = consoleBox.scrollHeight;
-                }, 3000);
-            }, 3200);
+                    hexConsole.innerHTML += row + "<br>";
+                    hexConsole.scrollTop = hexConsole.scrollHeight;
+                    count++;
+                    if(count > 25) {
+                        clearInterval(hexInterval);
+                        sysConsole.innerHTML += `<span style="color:#00ff66; font-weight:bold;">[SUCCESS] Simulación completada con éxito. Registros guardados.</span><br>`;
+                        sysConsole.scrollTop = sysConsole.scrollHeight;
+                    }
+                }, 60);
+            }, 2800);
         }
     </script>
 </body>
