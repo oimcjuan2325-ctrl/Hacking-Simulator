@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus Core // Advanced Security Framework</title>
+    <title>CryptoCore // Advanced Cryptographic Suite</title>
     <style>
         * {
             box-sizing: border-box;
@@ -152,9 +152,9 @@
             gap: 8px;
             align-items: center;
             border-radius: 4px;
+            flex-wrap: wrap;
         }
-        .control-footer input {
-            flex-grow: 1;
+        .control-footer select, .control-footer input {
             padding: 6px;
             background: #020408;
             border: 1px solid #00ff6655;
@@ -163,6 +163,9 @@
             border-radius: 4px;
             outline: none;
             font-size: 11px;
+        }
+        .control-footer input {
+            flex-grow: 1;
         }
         .control-footer button {
             padding: 6px 12px;
@@ -181,7 +184,7 @@
     <!-- PANTALLA DE ACCESO -->
     <div id="login-screen">
         <div class="login-box">
-            <h2>NEXUS CORE // LOGIN</h2>
+            <h2>CRYPTOGRAPHIC CORE</h2>
             <div class="input-group">
                 <label>OPERATOR ID</label>
                 <input type="text" id="userInput" placeholder="Usuario (Juan)...">
@@ -198,34 +201,38 @@
     <!-- PANTALLA DE CONTROL PRINCIPAL -->
     <div id="dashboard-screen">
         <header>
-            <h1>NEXUS SEC-FRAMEWORK v7.2 // ACTIVE TERMINAL</h1>
-            <div class="status-badge">KERNEL: SECURE [ONLINE]</div>
+            <h1>CRYPTO SUITE // RETOS DE CIFRADO</h1>
+            <div class="status-badge">[1. One-Time Pad | 2. AES-256 | 3. RSA-4096]</div>
         </header>
 
-        <!-- Panel Izquierdo: Terminal de Procesos -->
+        <!-- Panel Izquierdo: Consola de Proceso -->
         <div class="panel">
-            <h3>Consola de Sistema y Enlaces</h3>
+            <h3>Consola de Operaciones criptográficas</h3>
             <div class="console-box" id="systemConsole">
-                [INIT] Cargando módulos de red...<br>
-                [INIT] Enlazando interfaces virtuales wlan0 / eth0...<br>
-                [READY] Sistema preparado para análisis de nodos de prueba.<br>
+                [INIT] Sistema de cifrados avanzados cargado.<br>
+                [READY] Seleccione algoritmo y escriba su mensaje para cifrar o descifrar.<br>
             </div>
         </div>
 
-        <!-- Panel Derecho: Volcado Criptográfico Hexadecimal -->
+        <!-- Panel Derecho: Buffer de Ruido / Código Sin Sentido -->
         <div class="panel">
-            <h3>Buffer de Tráfico y Datos Binarios</h3>
+            <h3>Buffer de Tránsito Binario / Hex</h3>
             <div class="console-box" id="hexConsole" style="color: #00cc52;">
-                0x004A [OK] - Buffer limpio.<br>
-                0x008B [OK] - A la espera de instrucciones de objetivo...<br>
+                0x00A1 [ESTADO]: En espera de proceso...<br>
             </div>
         </div>
 
         <!-- Barra de Control Inferior -->
         <div class="control-footer">
-            <label style="font-size: 11px; color: #55aa77;">Objetivo / Comando:</label>
-            <input type="text" id="targetInput" placeholder="Introduce red, IP o comando de simulación (ej: target_wifi_01)">
-            <button onclick="executeSimulation()">Ejecutar Protocolo</button>
+            <select id="cipherSelect">
+                <option value="OTP">1. One-Time Pad (Indescifrable)</option>
+                <option value="AES">2. AES-256 (Muy Complejo)</option>
+                <option value="RSA">3. RSA-4096 (Supercomplejo)</option>
+            </select>
+            <input type="text" id="encryptInput" placeholder="Cifrar: Escribe tu mensaje aquí...">
+            <button onclick="runProcess('encrypt')">Cifrar</button>
+            <input type="text" id="decryptInput" placeholder="Descifrar: Pega el texto cifrado aquí...">
+            <button onclick="runProcess('decrypt')">Descifrar</button>
         </div>
     </div>
 
@@ -244,51 +251,67 @@
             }
         }
 
-        function executeSimulation() {
-            const target = document.getElementById('targetInput').value.trim();
+        function runProcess(mode) {
+            const cipher = document.getElementById('cipherSelect').value;
+            const text = mode === 'encrypt' ? document.getElementById('encryptInput').value.trim() : document.getElementById('decryptInput').value.trim();
             const sysConsole = document.getElementById('systemConsole');
             const hexConsole = document.getElementById('hexConsole');
 
-            if (!target) {
-                sysConsole.innerHTML += `<br><span style="color:#ff3366;">[ERROR] Especifica un objetivo válido en el campo inferior.</span><br>`;
+            if (!text) {
+                sysConsole.innerHTML += `<br><span style="color:#ff3366;">[ERROR] El campo de texto está vacío.</span><br>`;
                 return;
             }
 
-            sysConsole.innerHTML += `<br><span style="color:#33ff88;">[>] Iniciando análisis sobre objetivo: ${target}</span><br>`;
+            // Secuencia solicitada en el panel izquierdo
+            sysConsole.innerHTML += `<br><span style="color:#33ff88;">[INFO] Recibiendo el mensaje...</span><br>`;
             
             setTimeout(() => {
-                sysConsole.innerHTML += `> Estableciendo enlace mediante protocolo de capa 2...<br>`;
+                sysConsole.innerHTML += `[INFO] Procesando el mensaje bajo estándares de ${cipher}...<br>`;
                 sysConsole.scrollTop = sysConsole.scrollHeight;
-            }, 500);
+            }, 600);
 
             setTimeout(() => {
-                sysConsole.innerHTML += `> Extrayendo metadatos de seguridad y hashes del búfer...<br>`;
+                sysConsole.innerHTML += `<span style="color:#ffff00;">[INFO] ${mode === 'encrypt' ? 'Cifrando' : 'Descifrando'} el mensaje utilizando clave integrada...</span><br>`;
                 sysConsole.scrollTop = sysConsole.scrollHeight;
-            }, 1200);
+            }, 1400);
 
-            setTimeout(() => {
-                sysConsole.innerHTML += `<span style="color:#ffff00;">> Procesando simulación de IA criptográfica sobre el flujo de datos...</span><br>`;
-                sysConsole.scrollTop = sysConsole.scrollHeight;
-            }, 2000);
+            // Código sin sentido durante 2 segundos en el panel derecho
+            let hexInterval = setInterval(() => {
+                let chars = "0123456789ABCDEF!@#$%&*/\\<>~§¶";
+                let row = "0x" + Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase() + " [STREAM]: ";
+                for(let i=0; i<36; i++) {
+                    row += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                hexConsole.innerHTML += row + "<br>";
+                hexConsole.scrollTop = hexConsole.scrollHeight;
+            }, 40);
 
+            // Resultado final tras 2.2 segundos
             setTimeout(() => {
-                let count = 0;
-                let hexInterval = setInterval(() => {
-                    let chars = "0123456789ABCDEFDEADBEEFCAFE";
-                    let row = "0x" + Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase() + " [DATA]: ";
-                    for(let i=0; i<32; i++) {
-                        row += chars.charAt(Math.floor(Math.random() * chars.length));
+                clearInterval(hexInterval);
+                let result = "";
+                let randomKey = "KEY_" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                if (mode === 'encrypt') {
+                    if (cipher === 'OTP') {
+                        result = btoa(text).split('').reverse().join('') + `::OTP_KEY{${randomKey}}`;
+                    } else if (cipher === 'AES') {
+                        result = "U2FsdGVkX1" + btoa(text) + `::AES256_HASH{${randomKey}}`;
+                    } else {
+                        result = "RSA4096-" + btoa(text).substring(0, 10) + "..." + `::KEY{${randomKey}}`;
                     }
-                    hexConsole.innerHTML += row + "<br>";
-                    hexConsole.scrollTop = hexConsole.scrollHeight;
-                    count++;
-                    if(count > 25) {
-                        clearInterval(hexInterval);
-                        sysConsole.innerHTML += `<span style="color:#00ff66; font-weight:bold;">[SUCCESS] Simulación completada con éxito. Registros guardados.</span><br>`;
-                        sysConsole.scrollTop = sysConsole.scrollHeight;
+                    sysConsole.innerHTML += `<span style="color:#00ff66; font-weight:bold;">[RESULTADO CIFRADO]: ${result}</span><br>`;
+                } else {
+                    try {
+                        let decoded = atob(text.split('::')[0].replace("U2FsdGVkX1","").replace("RSA4096-","").replace("...",""));
+                        result = decoded || "Texto plano recuperado con éxito.";
+                    } catch(e) {
+                        result = "Error de clave o formato inválido.";
                     }
-                }, 60);
-            }, 2800);
+                    sysConsole.innerHTML += `<span style="color:#00ff66; font-weight:bold;">[RESULTADO DESCIFRADO]: ${result}</span><br>`;
+                }
+                sysConsole.scrollTop = sysConsole.scrollHeight;
+            }, 2200);
         }
     </script>
 </body>
